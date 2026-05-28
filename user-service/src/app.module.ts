@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module'
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { User } from './users/entities/user.entity';
 
     AuthModule,
     UsersModule,
+    RedisModule
   ],
 })
 export class AppModule {}

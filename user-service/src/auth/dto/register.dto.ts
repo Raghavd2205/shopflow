@@ -11,12 +11,12 @@ export class RegisterDto {
     @IsNotEmpty({ message: 'Name is required' })
     @IsString()
     @MaxLength(100)
-    name: string;
+    name!: string;
 
     @IsEmail({}, { message: 'Please provide a valid email' })
-    email: string;
+    email!: string;
 
     @IsString()
     @MinLength(6, { message: 'Password must be at least 6 characters' })
-    password: string;
+    password!: string;
 }

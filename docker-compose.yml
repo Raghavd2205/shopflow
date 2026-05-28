@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:8
+    container_name: shopflow-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: shopflow123
+      MYSQL_DATABASE: shopflow_users
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    networks:
+      - shopflow-network
+
+  redis:
+    image: redis:7
+    container_name: shopflow-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - shopflow-network
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  shopflow-network:
+    driver: bridge

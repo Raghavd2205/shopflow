@@ -23,7 +23,7 @@ export class UsersService {
     async findById(id: number): Promise<User | null> {
         return this.usersRepository.findOne({ where: { id } });
     }
-    async updateToken(userId:number,refreshToken:string): Promise<void>{
+    async updateToken(userId:number,refreshToken:any): Promise<void>{
      await this.usersRepository.update(userId,{refreshToken});
     }
 
