@@ -7,24 +7,33 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
 import { RegisterDto } from '../auth/dto/register.dto';
-
+import { UsersRepository } from 'src/users/users.repository';
+import { UpdateUsersDto } from './dto/updateUsers.dto';
 @Injectable()
 export class UsersService {
 
     constructor(
         @InjectRepository(User)
-        private usersRepository: Repository<User>,
+        private usersRepository: UsersRepository,
     ) { }
 
     async findByEmail(email: string): Promise<User | null> {
-        return this.usersRepository.findOne({ where: { email } });
+        return await this.usersRepository.findByEmail(email);
     }
 
     async findById(id: number): Promise<User | null> {
-        return this.usersRepository.findOne({ where: { id } });
+        return await this.usersRepository.findById(id);
     }
-    async updateToken(userId:number,refreshToken:any): Promise<void>{
-     await this.usersRepository.update(userId,{refreshToken});
+    async findAll():Promise<User[]|null>{
+        return await this.usersRepository.findAllUsers();
+    }
+    async updateToken(userId: number, refreshToken: any): Promise<void> {
+        await this.usersRepository.updateRefreshToken(userId,refreshToken);
+    }
+    async updateUserProfile(user:User,updateUserDto:UpdateUsersDto): Promise<User|null> {
+        const {name} = updateUserDto;
+        const userProfile= await this.usersRepository.updateProfile(user.id,name);
+        return userProfile;
     }
 
     async createUser(registerDto: RegisterDto): Promise<User> {
@@ -39,13 +48,13 @@ export class UsersService {
         // Hash password — never store plain text
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const user = this.usersRepository.create({
+        const user = await this.usersRepository.createUser({
             name,
             email,
             password: hashedPassword,
         });
 
-        return this.usersRepository.save(user);
+        return user;
     }
 
     // Remove sensitive fields from response

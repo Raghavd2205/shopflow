@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshDto } from './dto/refresh.dto';
+import { LogOutDto } from './dto/logOut.dto';
 
 @Controller('api/auth')
 export class AuthController {
@@ -47,8 +48,8 @@ export class AuthController {
     }
     @Post('logout')
     @HttpCode(HttpStatus.OK)
-    async logOut(@Body() UserId: number) {
-        const message = await this.authService.logOut(UserId);
+    async logOut(@Body()logOutDto:LogOutDto) {
+        const message = await this.authService.logOut(logOutDto);
         return {
             statusCode: 200,
             message: message
