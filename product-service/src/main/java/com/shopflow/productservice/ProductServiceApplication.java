@@ -1,4 +1,4 @@
-package com.shopflow.product_service;
+package com.shopflow.productservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
