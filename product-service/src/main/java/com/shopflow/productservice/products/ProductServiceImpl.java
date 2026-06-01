@@ -6,6 +6,7 @@ import com.shopflow.productservice.common.exception.DuplicateResourceException;
 import com.shopflow.productservice.common.exception.ResourceNotFoundException;
 import com.shopflow.productservice.products.dto.CreateProductDto;
 import com.shopflow.productservice.products.dto.ProductDto;
+import com.shopflow.productservice.products.dto.updateProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +45,41 @@ public class ProductServiceImpl implements ProductService{
                 .map(this::convertToDto)
                 .toList();
     }
+
+    @Override
+    public List<ProductDto> listAllProduct() {
+        List<Product> allProducts= this.productRepository.findAll();
+        List<ProductDto> ProductDto = allProducts.stream().map(this::convertToDto).toList();
+        return ProductDto;
+    }
+
+    @Override
+    public ProductDto listProductById(Long id) {
+        ProductDto product = convertToDto(this.productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found with id",id)));
+        return product;
+    }
+
+    @Override
+    public ProductDto updateProduct(updateProductDto CreateProductPayload) {
+        Product product = this.productRepository.findById(CreateProductPayload.getId()).orElseThrow(()->new ResourceNotFoundException("Product not found with id",CreateProductPayload.getId()));
+        Category category = this.categoryRepository.findById(CreateProductPayload.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Category", CreateProductPayload.getCategoryId()));
+        product.setName(CreateProductPayload.getName());
+        product.setDescription(CreateProductPayload.getDescription());
+        product.setCategory(category);
+        product.setStockQuantity(CreateProductPayload.getStockQuantity());
+        product.setPrice(CreateProductPayload.getPrice());
+        product.setIsActive(true);
+
+        return convertToDto(this.productRepository.save(product));
+    }
+
+    @Override
+    public List<ProductDto> productSearch(String value) {
+        List<Product> product = this.productRepository.searchProduct(value);
+        System.out.println("product"+product);
+        return product.stream().map(this::convertToDto).toList();
+    }
+
     // ─── Convert Entity to DTO ───────────────────
     private ProductDto convertToDto(Product product) {
         ProductDto dto = new ProductDto();
