@@ -18,4 +18,10 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
             "OR LOWER(p.category.name) LIKE LOWER(CONCAT('%', :value, '%')) " +
             "OR LOWER(p.category.description) LIKE LOWER(CONCAT('%', :value, '%'))")
     List<Product> searchProduct(@Param("value") String value);
+
+    @Query("SELECT p FROM Product p " +
+            "JOIN FETCH p.category " +
+            "WHERE p.category.id = :categoryId "+
+            "AND p.isActive = true")
+    List<Product> findActiveProductByCategoryId(@Param("categoryId") long categoryId);
 }
