@@ -37,7 +37,7 @@ export class UsersService {
     }
 
     async createUser(registerDto: RegisterDto): Promise<User> {
-        const { name, email, password } = registerDto;
+        const { name, email, password, isAdmin } = registerDto;
 
         // Check duplicate email
         const existingUser = await this.findByEmail(email);
@@ -52,6 +52,7 @@ export class UsersService {
             name,
             email,
             password: hashedPassword,
+            role: isAdmin ? 'admin' : 'customer'
         });
 
         return user;

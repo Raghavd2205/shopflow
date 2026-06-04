@@ -3,8 +3,9 @@ package com.shopflow.productservice.products;
 import com.shopflow.productservice.common.response.ApiResponse;
 import com.shopflow.productservice.products.dto.CreateProductDto;
 import com.shopflow.productservice.products.dto.ProductDto;
-import com.shopflow.productservice.products.dto.updateProductDto;
-import io.lettuce.core.output.ScanOutput;
+import com.shopflow.productservice.products.dto.UpdateProductDto;
+import com.shopflow.productservice.products.dto.UpdateStockDto;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,12 +50,15 @@ public class ProductController {
         return res4;
     }
     @PutMapping
-    public ResponseEntity<ApiResponse<ProductDto>> listProductById(@RequestBody updateProductDto updateProductPayload){
+    public ResponseEntity<ApiResponse<ProductDto>> listProductById(@RequestBody UpdateProductDto updateProductPayload){
         ResponseEntity<ApiResponse<ProductDto>> res3 = ResponseEntity.ok(
                 ApiResponse.success("Product Updated Successfully",this.productService.updateProduct(updateProductPayload)));
         System.out.println("res3 "+res3);
         return res3;
     }
-
+    @PatchMapping("/{productId}/stock")
+    public ResponseEntity<ApiResponse<ProductDto>> updateStockQuantity(@PathVariable Long productId, @RequestBody @Valid UpdateStockDto payload){
+        return ResponseEntity.ok(ApiResponse.success("Stock Quantity Updated Successfully",this.productService.updateStock(productId,payload)));
+    }
 
 }

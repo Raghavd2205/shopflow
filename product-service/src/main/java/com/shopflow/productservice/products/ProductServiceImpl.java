@@ -4,10 +4,15 @@ import com.shopflow.productservice.categories.Category;
 import com.shopflow.productservice.categories.CategoryRepository;
 import com.shopflow.productservice.common.exception.DuplicateResourceException;
 import com.shopflow.productservice.common.exception.ResourceNotFoundException;
+import com.shopflow.productservice.config.CacheConfig;
 import com.shopflow.productservice.products.dto.CreateProductDto;
 import com.shopflow.productservice.products.dto.ProductDto;
-import com.shopflow.productservice.products.dto.updateProductDto;
+import com.shopflow.productservice.products.dto.UpdateProductDto;
+import com.shopflow.productservice.products.dto.UpdateStockDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +23,10 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     @Override
+    @Caching(evict = {
+            @CacheEvict(value = CacheConfig.PRODUCTS_CACHE, allEntries = true),
+            @CacheEvict(value = CacheConfig.CATEGORIES_CACHE, allEntries = true)
+    })
     public List<ProductDto> addProduct(List<CreateProductDto> CreateProductPayload) {
        List<Product> products =  CreateProductPayload.stream().map(dto->{
             boolean flag = this.productRepository.existsByName(dto.getName());
@@ -47,6 +56,14 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    // @Cacheable — cache result in Redis
+    // value = cache name, key = cache key
+    // If cache hit → return from Redis, skip method body
+    // If cache miss → execute method, store result in Redis
+    @Cacheable(
+            value = CacheConfig.PRODUCTS_CACHE,
+            key = "'all'"
+    )
     public List<ProductDto> listAllProduct() {
         List<Product> allProducts= this.productRepository.findAll();
         List<ProductDto> ProductDto = allProducts.stream().map(this::convertToDto).toList();
@@ -54,13 +71,25 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
+    // Cache per product id
+    // key = "1", "2", "3" etc
+    @Cacheable(
+            value = CacheConfig.PRODUCT_CACHE,
+            key = "#id"
+    )
     public ProductDto listProductById(Long id) {
         ProductDto product = convertToDto(this.productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product not found with id",id)));
+        System.out.println("product"+product);
         return product;
     }
 
     @Override
-    public ProductDto updateProduct(updateProductDto CreateProductPayload) {
+    @Caching(evict = {
+            @CacheEvict(value = CacheConfig.PRODUCT_CACHE, key="#id"),
+            @CacheEvict(value = CacheConfig.PRODUCTS_CACHE, allEntries = true),
+            @CacheEvict(value = CacheConfig.CATEGORIES_CACHE, allEntries = true)
+    })
+    public ProductDto updateProduct(UpdateProductDto CreateProductPayload) {
         Product product = this.productRepository.findById(CreateProductPayload.getId()).orElseThrow(()->new ResourceNotFoundException("Product not found with id",CreateProductPayload.getId()));
         Category category = this.categoryRepository.findById(CreateProductPayload.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Category", CreateProductPayload.getCategoryId()));
         product.setName(CreateProductPayload.getName());
@@ -78,6 +107,20 @@ public class ProductServiceImpl implements ProductService{
         List<Product> product = this.productRepository.searchProduct(value);
         System.out.println("product"+product);
         return product.stream().map(this::convertToDto).toList();
+    }
+
+
+
+    @Override
+    @Caching(evict = {
+            @CacheEvict(value = CacheConfig.PRODUCT_CACHE, key="#id"),
+            @CacheEvict(value = CacheConfig.PRODUCTS_CACHE, allEntries = true),
+            @CacheEvict(value = CacheConfig.CATEGORIES_CACHE, allEntries = true)
+    })
+    public ProductDto updateStock(Long id, UpdateStockDto payload) {
+        Product product = this.productRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Product not found with id : "+id));
+        product.setStockQuantity(payload.getStockQuantity());
+        return this.convertToDto(this.productRepository.save(product));
     }
 
     // ─── Convert Entity to DTO ───────────────────

@@ -2,6 +2,7 @@ package com.shopflow.productservice.categories;
 
 import com.shopflow.productservice.categories.dto.CategoryDto;
 import com.shopflow.productservice.categories.dto.CreateCategoryDto;
+import com.shopflow.productservice.common.exception.BadRequestException;
 import com.shopflow.productservice.common.exception.DuplicateResourceException;
 import com.shopflow.productservice.common.exception.ResourceNotFoundException;
 import com.shopflow.productservice.products.Product;
@@ -40,11 +41,11 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = this.categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("Category with Id"+categoryId+" id not present"));
         List<Product> products = this.productRepository.findActiveProductByCategoryId(categoryId);
         if(!products.isEmpty()){
-            throw new RuntimeException("Unable to delete category with active products");
+            throw new BadRequestException("Unable to delete category with active products");
         }
         this.categoryRepository.delete(category);
         if(this.categoryRepository.existsById(categoryId)){
-            throw new BadRequestException("Something went wrong");
+            throw new RuntimeException("Something went wrong");
         }
         return "Category with Id"+categoryId+" deleted successfully";
     }

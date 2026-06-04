@@ -6,7 +6,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-public class updateProductDto {
+public class UpdateProductDto {
     @NotBlank(message = "Id is required")
     private Long id;
 
