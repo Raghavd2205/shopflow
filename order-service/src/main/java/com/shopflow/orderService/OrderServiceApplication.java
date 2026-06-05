@@ -1,4 +1,4 @@
-package com.shopflow.order_service;
+package com.shopflow.orderService;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
