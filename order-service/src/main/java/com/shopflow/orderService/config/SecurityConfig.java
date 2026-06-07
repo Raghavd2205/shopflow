@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/product/**",
                                 "/api/v1/category/**",
-                                "/health"
+                                "/api/v1/health"
                         ).permitAll()
 
                         // ─── ADMIN ONLY ──────────────────────────

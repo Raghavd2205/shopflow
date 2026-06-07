@@ -1,4 +1,4 @@
-package com.shopflow.orderservice.clients;
+package com.shopflow.orderService.clients;
 
 import com.shopflow.orderService.clients.dto.ProductDto;
 import com.shopflow.orderService.clients.dto.UpdateStockDto;

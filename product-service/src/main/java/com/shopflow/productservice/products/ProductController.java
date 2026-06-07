@@ -37,7 +37,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ProductDto>> listProductById(@PathVariable Long id){
         ResponseEntity<ApiResponse<ProductDto>> res2 = ResponseEntity.ok(
-                ApiResponse.success("Product Added Successfully",this.productService.listProductById(id)));
+                ApiResponse.success("Product Fetched Successfully",this.productService.listProductById(id)));
         System.out.println("res2 "+res2);
         return res2;
     }
