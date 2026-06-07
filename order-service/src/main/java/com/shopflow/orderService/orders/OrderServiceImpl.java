@@ -26,7 +26,7 @@ public class OrderServiceImpl implements OrderService{
     @Transactional
     public OrderDto placeOrder(PlaceOrderDto payload, Long userId) {
         List<OrderItem> orderItems =   payload.getItems().stream().map(itemRequest ->{
-            ProductDto product = productClient.getProductById(itemRequest.getProductId());
+            ProductDto product = productClient.getProductById(itemRequest.getProductId()).getData();
             System.out.println("Product"+product);
             if(!product.getIsActive()){
                 throw new BadRequestException("Product " + product.getName() + " is not available");
@@ -65,12 +65,12 @@ public class OrderServiceImpl implements OrderService{
 
         //update stock
         orderItems.forEach(item->{
-            ProductDto product = productClient.getProductById(item.getProductId());
+            ProductDto product = productClient.getProductById(item.getProductId()).getData();
             Integer stockQuantity = product.getStockQuantity() -item.getQuantity();
             UpdateStockDto updateStock = UpdateStockDto.builder()
                     .stockQuantity(stockQuantity)
                     .build();
-            ProductDto productDto = productClient.updateStock(userId,updateStock);
+            ProductDto productDto = productClient.updateStock(userId,updateStock).getData();
         });
 
 
