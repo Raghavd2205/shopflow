@@ -56,7 +56,7 @@ public class ProductController {
         System.out.println("res3 "+res3);
         return res3;
     }
-    @PatchMapping("/{productId}/stock")
+    @PutMapping("/{productId}/stock")
     public ResponseEntity<ApiResponse<ProductDto>> updateStockQuantity(@PathVariable Long productId, @RequestBody @Valid UpdateStockDto payload){
         return ResponseEntity.ok(ApiResponse.success("Stock Quantity Updated Successfully",this.productService.updateStock(productId,payload)));
     }

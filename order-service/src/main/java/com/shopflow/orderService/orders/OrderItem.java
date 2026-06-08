@@ -1,6 +1,7 @@
 package com.shopflow.orderService.orders;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +35,7 @@ public class OrderItem {
     private String productName;
 
     @Column(nullable = false)
+    @Min(value = 1,message = "Quantity should be greater then 0")
     private Integer quantity;
 
     // Store price at time of order
