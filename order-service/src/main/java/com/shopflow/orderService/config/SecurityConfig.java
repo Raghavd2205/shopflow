@@ -67,6 +67,13 @@ public class SecurityConfig {
                                 "/api/v1/category/**"
                         ).hasRole("ADMIN")
 
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/order/admin"
+                        ).hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH,
+                                "/api/v1/order/admin/*"
+                        ).hasRole("ADMIN")
+
                         .requestMatchers(HttpMethod.DELETE,
                                 "/api/v1/product/**",
                                 "/api/v1/category/**"

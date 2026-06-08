@@ -29,4 +29,9 @@ public class ApiResponse<T> {
     public static <T> ApiResponse<T> success(String message) {
         return new ApiResponse<>(200, message, null);
     }
+
+    //delete Success
+    public static <T> ApiResponse<T> delete(String message) {
+        return new ApiResponse<>(200, message, null);
+    }
 }

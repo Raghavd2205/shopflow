@@ -55,6 +55,10 @@ public class SecurityConfig {
                                 "/health"
                         ).permitAll()
 
+                        .requestMatchers(HttpMethod.PUT,
+                                "/api/v1/product/*/stock"
+                        ).permitAll()  // ← stock update allowed from internal services
+
                         // ─── ADMIN ONLY ──────────────────────────
                         // Only users with ROLE_ADMIN can do these
                         .requestMatchers(HttpMethod.POST,
@@ -63,8 +67,8 @@ public class SecurityConfig {
                         ).hasRole("ADMIN")  // ← checks ROLE_ADMIN in SecurityContext
 
                         .requestMatchers(HttpMethod.PUT,
-                                "/api/v1/product/**",
-                                "/api/v1/category/**"
+                                "/api/v1/category/**",
+                                "/api/v1/product/"
                         ).hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.DELETE,
