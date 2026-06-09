@@ -5,7 +5,7 @@ import { AuthModule } from 'src/auth/auth.module'
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { RedisModule } from './redis/redis.module';
-
+import {CartModule} from 'src/auth/cart/cart.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -29,7 +29,8 @@ import { RedisModule } from './redis/redis.module';
 
     AuthModule,
     UsersModule,
-    RedisModule
+    RedisModule,
+    CartModule
   ],
 })
 export class AppModule {}

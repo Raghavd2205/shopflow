@@ -1,12 +1,23 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('api/v1/health')
+  health() {
+    return {
+      statusCode: 200,
+      message: 'API Gateway is running',
+      data: {
+        status: 'UP',
+        service: 'API Gateway',
+        timestamp: new Date().toISOString(),
+        routes: {
+          userService: process.env.USER_SERVICE_URL,
+          productService: process.env.PRODUCT_SERVICE_URL,
+          orderService: process.env.ORDER_SERVICE_URL,
+        },
+      },
+    };
   }
 }
